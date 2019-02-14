@@ -6,7 +6,7 @@
 */
 
 set SERVEROUTPUT ON;
-EXECUTE xo_enterprise('Enterprise', 99999999999);
+EXECUTE xo_enterprise('99999999999', 'Enterpriser', 'Address');
 
 SELECT
     nombre(id_personal) name,
@@ -50,7 +50,38 @@ FROM
     datos_personales
 WHERE
     ruc = '99999999999';
-    
+
+SELECT
+    serie||'-'||numdoc, fecha,
+    COUNT(serie||'-'||numdoc)
+FROM
+    vent_registro
+WHERE
+    TO_CHAR(fecha, 'ddmmyyyy') = '10022019'
+GROUP BY
+    serie||'-'||numdoc, fecha
+HAVING
+    COUNT(serie||'-'||numdoc) > 1;
+
+DELETE FROM fe_resumen_bol
+WHERE
+    TO_CHAR(fecha, 'ddmmyyyy') = '00002019'
+    AND ( serie||'-'|| numini ) NOT IN ('');
+
+DELETE FROM doc_enviado_sunat
+WHERE
+    id = 'RC-20190000-000';
+
+SELECT
+    *
+FROM
+    fe_resumen_bol
+WHERE
+    TO_CHAR(fecha, 'ddmmyyyy') = '00002019';
+
+DELETE FROM fe_resumen_bol
+WHERE
+    TO_CHAR(fecha, 'ddmmyyyy') = '00002019';
     
 /*
    _ \               |                            |   
@@ -65,6 +96,9 @@ select * from fact_trama where id_proceso='F9999';
 select * from fact_auditoria where id_proceso='F9999';
 select * from fact_pdf where id_proceso='F9999';
 select * from fact_envio_doc where id_proceso='F9999';
+
+--Lote
+select '''||serie||'',' from fact_det_boletas where id_proceso='RC-00000000-000';
 
 
 delete from fact_documentos where id_proceso='F9999';
