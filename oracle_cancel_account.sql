@@ -1,0 +1,23 @@
+CREATE OR REPLACE PROCEDURE XO_CANCEL_ACCOUNT (xoaccount in VARCHAR2) IS
+  l_ext NUMBER(1);
+  l_ctate VARCHAR2(22);
+  l_status VARCHAR2(2);
+BEGIN
+  SELECT 
+  CASE
+  WHEN EXISTS (SELECT * FROM CRED_CTACTE WHERE NRO_CTACTE=xoaccount) THEN 1
+  ELSE 0
+  END INTO l_ext
+  FROM DUAL;
+  
+  IF l_ext = 1 
+    THEN
+      SELECT ID_CTACTE, ESTADO INTO l_ctate, l_status FROM CRED_CTACTE WHERE NRO_CTACTE=xoaccount;
+      DBMS_OUTPUT.put_line('VOID - '||xoaccount||' STATUS - '||l_status);
+      UPDATE CRED_CTACTE SET ESTADO = '5', NRO_CTACTE = 'X'||xoaccount WHERE ID_CTACTE=l_ctate;
+      COMMIT;
+      DBMS_OUTPUT.put_line('THE ACCOUNT UNSUBSCRIBE');
+    ELSE
+      DBMS_OUTPUT.put_line('THE ACCOUNT NO EXIST');
+  END IF;
+END XO_CANCEL_ACCOUNT;
